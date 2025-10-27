@@ -76,7 +76,11 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build iOS targets
-        run: ./gradlew :composeApp:iosX64Test :composeApp:iosArm64Test --stacktrace
+        run: |
+          ./gradlew \
+          :composeApp:linkDebugFrameworkIosSimulatorArm64 \
+          :composeApp:linkDebugFrameworkIosArm64 \
+          --no-daemon --no-parallel -s
 
   # =====================================================
   # macOS Desktop build
