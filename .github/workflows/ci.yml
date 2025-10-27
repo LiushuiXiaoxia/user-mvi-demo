@@ -42,6 +42,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+            ~/.konan
           key: ${{ needs.setup.outputs.gradle-cache-key }}
 
       - name: Setup Android SDK
@@ -72,6 +73,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: ${{ needs.setup.outputs.gradle-cache-key }}
+
       - name: Grant execute permission
         run: chmod +x gradlew
 
@@ -97,8 +106,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: ${{ needs.setup.outputs.gradle-cache-key }}
+
       - name: Build macOS App
-        run: ./gradlew :composeApp:packageDistributionForCurrentOS --stacktrace
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS -s -i
 
   # =====================================================
   # Windows Desktop build
@@ -115,11 +132,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: ${{ needs.setup.outputs.gradle-cache-key }}
+
       - name: Grant execute permission (Windows)
         run: git config core.fileMode false
 
       - name: Build Windows App
-        run: ./gradlew.bat :composeApp:packageDistributionForCurrentOS --stacktrace
+        run: ./gradlew.bat :composeApp:packageDistributionForCurrentOS -s -i
 
   # =====================================================
   # Linux Desktop build
@@ -136,11 +161,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.konan
+          key: ${{ needs.setup.outputs.gradle-cache-key }}
+
       - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Build Linux App
-        run: ./gradlew :composeApp:packageDistributionForCurrentOS --stacktrace
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS -s -i
 
   # =====================================================
   # Final Aggregator Job
