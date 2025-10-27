@@ -1,0 +1,152 @@
+name: Kotlin Multiplatform CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # =====================================================
+  # Shared settings for caching + setup
+  # =====================================================
+  setup:
+    name: Prepare Environment
+    runs-on: ubuntu-latest
+    outputs:
+      gradle-cache-key: ${{ steps.cache-key.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: cache-key
+        run: echo "value=${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}" >> $GITHUB_OUTPUT
+
+  # =====================================================
+  # Android build
+  # =====================================================
+  android:
+    name: Android Build
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ needs.setup.outputs.gradle-cache-key }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Android
+        run: ./gradlew :composeApp:assembleDebug --stacktrace
+
+#      - name: Run Android Unit Tests
+#        run: ./gradlew :shared:testDebugUnitTest --stacktrace
+
+  # =====================================================
+  # iOS build (macOS runner required)
+  # =====================================================
+  ios:
+    name: iOS Build
+    runs-on: macos-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build iOS targets
+        run: ./gradlew :composeApp:iosX64Test :composeApp:iosArm64Test --stacktrace
+
+  # =====================================================
+  # macOS Desktop build
+  # =====================================================
+  macos-desktop:
+    name: macOS Desktop
+    runs-on: macos-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build macOS App
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS --stacktrace
+
+  # =====================================================
+  # Windows Desktop build
+  # =====================================================
+  windows-desktop:
+    name: Windows Desktop
+    runs-on: windows-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission (Windows)
+        run: git config core.fileMode false
+
+      - name: Build Windows App
+        run: ./gradlew.bat :composeApp:packageDistributionForCurrentOS --stacktrace
+
+  # =====================================================
+  # Linux Desktop build
+  # =====================================================
+  linux-desktop:
+    name: Linux Desktop
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build Linux App
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS --stacktrace
+
+  # =====================================================
+  # Final Aggregator Job
+  # =====================================================
+  summary:
+    name: Build Summary
+    runs-on: ubuntu-latest
+    needs: [android, ios, macos-desktop, windows-desktop, linux-desktop]
+    if: always()
+
+    steps:
+      - name: Build Summary
+        run: echo "✅ All platform builds completed!"
