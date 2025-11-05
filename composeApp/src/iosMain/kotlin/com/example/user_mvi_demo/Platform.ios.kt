@@ -2,8 +2,16 @@ package com.example.user_mvi_demo
 
 import platform.UIKit.UIDevice
 
-class IOSPlatform: Platform {
+class IOSPlatform : Platform {
     override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+
+class IOSPlatformContext : PlatformContext {
+
+}
+
+fun initKmpApp() {
+    PlatformApp.init(IOSPlatformContext())
+}

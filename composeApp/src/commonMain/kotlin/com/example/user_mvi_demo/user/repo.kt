@@ -2,7 +2,7 @@ package com.example.user_mvi_demo.user
 
 class UserRepository {
     private val list = mutableListOf(
-        User(1, "Alice", "Shanghai"),
+        User(1, "555", "Shanghai"),
         User(2, "Bob", "Beijing"),
         User(3, "Charlie", "Shenzhen")
     )

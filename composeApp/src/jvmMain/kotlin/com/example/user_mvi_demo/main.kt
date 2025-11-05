@@ -3,11 +3,15 @@ package com.example.user_mvi_demo
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
-fun main() = application {
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "Usermvidemo",
-    ) {
-        App()
+fun main() {
+    initKmpApp()
+    application {
+        Window(
+            onCloseRequest = ::exitApplication,
+            alwaysOnTop = true,
+            title = "Usermvidemo",
+        ) {
+            App()
+        }
     }
 }
