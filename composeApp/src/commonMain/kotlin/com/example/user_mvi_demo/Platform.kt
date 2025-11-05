@@ -1,5 +1,8 @@
 package com.example.user_mvi_demo
 
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
+
 interface Platform {
     val name: String
 }
@@ -17,5 +20,8 @@ object PlatformApp {
 
     fun init(platformContext: PlatformContext) {
         this._context = platformContext
+
+        Napier.base(DebugAntilog())
+        Napier.i { "PlatformApp.init context = $context" }
     }
 }

@@ -5,7 +5,8 @@ import ComposeApp
 struct iOSApp: App {
 
     init() {
-        SharedPlatformAppKt.initKmpApp()
+        // Platform_iosKt.initKmpApp()
+        Platform_iosKt.doInitKmpApp()
     }
 
     var body: some Scene {
