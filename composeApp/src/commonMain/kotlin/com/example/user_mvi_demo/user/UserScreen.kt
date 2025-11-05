@@ -27,10 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun UserScreen(
-    viewModel: UserViewModel = remember { UserViewModel(UserRepository()) }
+    viewModel: UserViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {

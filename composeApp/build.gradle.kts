@@ -1,3 +1,4 @@
+import io.kotzilla.gradle.ext.KotzillaKeyGeneration
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotzilla)
 }
 
 kotlin {
@@ -28,6 +30,7 @@ kotlin {
 
     jvm()
 
+    val koin_version = "4.1.1"
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -40,15 +43,23 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+//            implementation("io.insert-koin:koin-compose:${koin_version}")
+//            implementation("io.insert-koin:koin-compose-viewmodel:${koin_version}")
 
             implementation("io.github.aakira:napier:2.7.1")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.koin.test)
         }
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.koin.android)
+            // implementation(libs.kotzilla.sdk.compose)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -83,6 +94,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
+
+//kotzilla {
+//    versionName = android.defaultConfig.versionName // add your app version name
+//    keyGeneration = KotzillaKeyGeneration.COMPOSE
+//    composeInstrumentation = true
+//}
+
 
 dependencies {
     debugImplementation(compose.uiTooling)
