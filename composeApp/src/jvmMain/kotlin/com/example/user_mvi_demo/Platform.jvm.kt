@@ -5,3 +5,11 @@ class JVMPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = JVMPlatform()
+
+class JavaPlatformContext : PlatformContext {
+
+}
+
+fun initKmpApp() {
+    PlatformApp.init(JavaPlatformContext())
+}
