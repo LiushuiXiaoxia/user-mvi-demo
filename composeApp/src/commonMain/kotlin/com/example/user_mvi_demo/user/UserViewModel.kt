@@ -23,7 +23,6 @@ class UserViewModel(
             is UserUiIntent.ShowConfirm -> showConfirm(intent.action)
             is UserUiIntent.ConfirmActionYes -> doConfirmAction()
             is UserUiIntent.ConfirmActionNo -> cancelConfirm()
-            else -> throw IllegalArgumentException("Invalid intent")
         }
     }
 
